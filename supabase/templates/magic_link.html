@@ -1,0 +1,9 @@
+<div style="background:#f6f3ee;padding:32px;font-family:Georgia,serif;color:#1c1917;">
+  <p style="letter-spacing:0.18em;text-transform:uppercase;font-size:12px;">Harbor</p>
+  <h1 style="font-size:28px;font-weight:600;">Sign in to Harbor</h1>
+  <p style="font-size:16px;line-height:1.6;">This link signs you in. It expires after a short time.</p>
+  <p>
+    <a href="{{ .ConfirmationURL }}" style="display:inline-block;background:#1c1917;color:#f6f3ee;text-decoration:none;padding:12px 18px;">Sign in</a>
+  </p>
+  <p style="font-size:14px;line-height:1.6;">Or enter this code: {{ .Token }}</p>
+</div>
