@@ -1,0 +1,18 @@
+---
+description: Commit and push every finished change to GitHub
+alwaysApply: true
+---
+
+# Auto-push to GitHub
+
+The owner wants every change in this project pushed to `origin` (https://github.com/WIIZYDEV01/harbor-juwon), branch `main`, without being asked.
+
+After finishing any task that changes files:
+
+1. Run `git status --short` and review what changed.
+2. Never commit secrets. `.env.local`, `.cursor/.env`, and any file holding keys or passwords must stay untracked. Scan staged content for `sb_secret_`, `sb_publishable_`, and JWTs before committing.
+3. `git add -A`, then commit with a short message describing the change.
+4. `git push origin main`. If rejected, `git pull --no-rebase origin main`, resolve, and push again. Never force-push.
+5. Tell the owner the commit was pushed, with a link to the repo.
+
+Skip the push only when the task changed no files, or when the owner says not to push.
