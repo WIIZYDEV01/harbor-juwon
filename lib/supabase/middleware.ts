@@ -10,8 +10,17 @@ function copyCookies(from: NextResponse, to: NextResponse) {
 }
 
 export async function updateSession(request: NextRequest) {
+  let env: ReturnType<typeof getPublicSupabaseEnv>;
+  try {
+    env = getPublicSupabaseEnv();
+  } catch {
+    return new NextResponse(
+      "Harbor is not configured. Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY to this deployment's environment variables, then redeploy.",
+      { status: 503, headers: { "Content-Type": "text/plain; charset=utf-8" } },
+    );
+  }
+  const { url, key } = env;
   let response = NextResponse.next({ request });
-  const { url, key } = getPublicSupabaseEnv();
 
   const supabase = createServerClient(url, key, {
     cookies: {
