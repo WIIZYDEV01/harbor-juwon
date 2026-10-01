@@ -46,6 +46,8 @@ export function Avatar({
     <img
       src={`/api/profile-image/${profileId}${query}`}
       alt={`Profile photo of ${name || "this person"}`}
+      loading="lazy"
+      decoding="async"
       className={`shrink-0 rounded-full object-cover ring-1 ring-ink/10 ${dimension}`}
     />
   );

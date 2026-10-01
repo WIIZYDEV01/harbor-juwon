@@ -51,7 +51,10 @@ export default async function DashboardPage({
   const params = await searchParams;
   const notice = readCodedMessage(NOTICES, params.notice);
   const error = readCodedMessage(ERRORS, params.error);
-  const ownResult = await getOwnProfile();
+  const [ownResult, directory] = await Promise.all([
+    getOwnProfile(),
+    listDirectory({ pageSize: 8 }),
+  ]);
 
   if (!ownResult.user) return null;
   if (ownResult.error) return <StateMessage tone="error">{ERRORS.load}</StateMessage>;
@@ -59,9 +62,9 @@ export default async function DashboardPage({
   const own = ownResult.profile;
   const role = own?.role ?? null;
   const isStaff = role === "admin" || role === "super_admin";
+  const preview = role ? directory : null;
 
-  const [preview, statsResult, activity] = await Promise.all([
-    role ? listDirectory({ pageSize: isStaff ? 8 : 6 }) : null,
+  const [statsResult, activity] = await Promise.all([
     isStaff ? getProfileStats() : null,
     isStaff ? listActivity(ownResult.user.id, 10) : null,
   ]);
@@ -75,7 +78,7 @@ export default async function DashboardPage({
   }
 
   const status = completion(own);
-  const people = (preview?.rows ?? []).map(toCard);
+  const people = (preview?.rows ?? []).slice(0, isStaff ? 8 : 6).map(toCard);
   const stats = statsResult?.stats;
 
   return (

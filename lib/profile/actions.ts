@@ -2,7 +2,6 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
 import {
   folderHasFiles,
   PROFILE_BUCKET,
@@ -277,10 +276,7 @@ export async function uploadProfileImage(
 }
 
 export async function deleteProfileImage() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { supabase, user } = await getSessionUser();
   if (!user) return finish("/profile", "permission", "error");
 
   const { data: profile, error: readError } = await supabase

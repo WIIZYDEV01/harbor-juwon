@@ -55,11 +55,20 @@ function likePattern(value: string) {
   return `%${value.replace(/[\\%_]/g, (match) => `\\${match}`)}%`;
 }
 
+export type SessionUser = {
+  id: string;
+  email: string | null;
+  user_metadata: Record<string, unknown>;
+};
+
 export const getSessionUser = cache(async () => {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // Verified locally against the project's asymmetric signing key; no Auth round trip.
+  const { data } = await supabase.auth.getClaims();
+  const claims = data?.claims;
+  const user: SessionUser | null = claims?.sub
+    ? { id: claims.sub, email: claims.email ?? null, user_metadata: claims.user_metadata ?? {} }
+    : null;
   return { supabase, user };
 });
 

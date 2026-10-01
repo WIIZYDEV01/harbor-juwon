@@ -24,7 +24,10 @@ export default async function DirectoryPage({
   const role = isUserRole(roleParam) ? roleParam : null;
   const page = Math.max(1, Number.parseInt(params.page ?? "1", 10) || 1);
 
-  const ownResult = await getOwnProfile();
+  const [ownResult, list] = await Promise.all([
+    getOwnProfile(),
+    listDirectory({ query, role, page }),
+  ]);
   if (ownResult.error) return <StateMessage tone="error">{ERRORS.load}</StateMessage>;
 
   const viewerRole = ownResult.profile?.role ?? null;
@@ -37,7 +40,6 @@ export default async function DirectoryPage({
     );
   }
 
-  const list = await listDirectory({ query, role, page });
   if (list.error || !rowsMatchRole(viewerRole, list.rows)) {
     return <StateMessage tone="error">{ERRORS.load}</StateMessage>;
   }

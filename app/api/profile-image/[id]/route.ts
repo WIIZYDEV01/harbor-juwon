@@ -29,10 +29,8 @@ export async function GET(
   if (!isUuid(id)) return denied();
 
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return denied();
+  const { data: auth } = await supabase.auth.getClaims();
+  if (!auth?.claims?.sub) return denied();
 
   const { data, error } = await supabase
     .from("profiles")
@@ -65,6 +63,8 @@ export async function GET(
     status: 200,
     headers: {
       ...privateHeaders,
+      // Image URLs carry ?v=updated_at, so a changed photo gets a new URL.
+      "Cache-Control": "private, max-age=600",
       "Content-Type": imageContentType(kind),
     },
   });
